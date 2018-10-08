@@ -36,7 +36,7 @@ public class DownStreemFeed {
 	private static Session serverSession = null;
 	public static Config config = null;
 	private static String filePath = "C:/Users/msrikan7/git/TestUpload/TestProject/asoclientfeed/";
-	private static final String outputFile = filePath + "rxsolutionpricing10082018" + "_" + getTimeStamp() + ".xml";
+	private static final String outputFile = filePath + "rxsolutionpricing10082018.xml";
 
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
@@ -136,10 +136,10 @@ public class DownStreemFeed {
 	}
 
 	/**
-	 * Function Name : getTimeStamp Description : This function is used to get
-	 * time stamp
+	 * Function Name : getFormattedDate Description : This function is used to get
+	 * Formatted Date for Feed 
 	 **/
-	private static String getTimeStamp() {
+	private static String getFormattedDate() {
 		SimpleDateFormat dateformatter = new SimpleDateFormat("HHmmssSS");
 		Date todaysDate = new Date();
 		String str_date = dateformatter.format(todaysDate);
