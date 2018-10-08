@@ -68,25 +68,22 @@ public class DownStreemFeed {
 	 * Function Name : verifyFolderPath Description : This function is used to
 	 * pretty Print XML Document
 	 **/
-	
-	private static Document prettyPrintXML(String filePath) throws ParserConfigurationException, SAXException, IOException,TransformerFactoryConfigurationError, TransformerException {
-		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-		Document document = docBuilder.parse(new java.io.File(filePath));
-		Transformer tform = TransformerFactory.newInstance().newTransformer();
-		tform.setOutputProperty(OutputKeys.INDENT, "yes");
-		tform.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-		tform.transform(new DOMSource(document), new StreamResult(System.out));
+	private static Document prettyPrintXML(String filePath) {
+		Document document = null;
+		try {
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+			document = docBuilder.parse(new java.io.File(filePath));
+			Transformer tform = TransformerFactory.newInstance().newTransformer();
+			tform.setOutputProperty(OutputKeys.INDENT, "yes");
+			tform.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+			tform.transform(new DOMSource(document), new StreamResult(System.out));
+		} catch (ParserConfigurationException | SAXException | IOException | TransformerFactoryConfigurationError
+				| TransformerException exception) {
+			exception.printStackTrace();
+		}
 		return document;
 	}
-	
-/*	public static final void prettyPrintXML(Document xmlDocument) throws Exception {
-		Transformer tf = TransformerFactory.newInstance().newTransformer();
-		tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-		tf.setOutputProperty(OutputKeys.INDENT, "yes");
-		Writer out = new StringWriter();
-		tf.transform(new DOMSource(xmlDocument), new StreamResult(out));
-	}*/
 
 	/**
 	 * Function Name : transferFileFromServer Description : This function is
@@ -119,15 +116,13 @@ public class DownStreemFeed {
 			// Close Channel
 			channel.disconnect();
 			// Pretty Print XML Document
-			/*DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setValidating(false);
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document document = db.parse(new FileInputStream(new File(outputFile)));*/
 			prettyPrintXML(outputFile);
 			System.out.println("Pretty Print of XML Done.");
-			System.out.println("**************************************************************************************************************");
+			System.out.println(
+					"**************************************************************************************************************");
 			System.out.println("File Saved." + outputFile);
-			System.out.println("**************************************************************************************************************");
+			System.out.println(
+					"**************************************************************************************************************");
 		} catch (JSchException jschException) {
 			System.out.println("Unable to create SFTP Channel to Host : " + hostServer);
 			System.out.println("File Tranfer from Host :" + hostServer + " got Failed");
@@ -200,7 +195,7 @@ public class DownStreemFeed {
 			System.out.println(log);
 			transferFileFromServer(serverSession, serverPath, Enum_Feeds.RXSolution);
 			serverSession.disconnect();
-			//Push File to Git Hub in Remote 
+			// Push File to Git Hub in Remote
 			JGit.pullChangesFromGit();
 			JGit.pushChangesToGit();
 			System.out.println("File Pushed to Git");

@@ -49,14 +49,15 @@ public class DB2Connection {
 			PreparedStatement preStatement = connectionObject.prepareStatement(QrySetSchema);
 			Statement statement = connectionObject.createStatement();
 			ResultSet resultSet = statement.executeQuery(sqlQry);
-			while(resultSet.next()){
+			while (resultSet.next()) {
 				System.out.println("Customer Name " + resultSet.getString(4));
 			}
 			// Close Prepared Statement & Connection Object
 			preStatement.close();
 			statement.close();
 			connectionObject.close();
-			//System.out.println("Transaction " + tranId + " released sucessfully from Batch");
+			// System.out.println("Transaction " + tranId + " released
+			// sucessfully from Batch");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -70,8 +71,8 @@ public class DB2Connection {
 			}
 		}
 	}
-	
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		new DB2Connection().getLatestTransaction();
 	}
 }

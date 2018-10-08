@@ -16,6 +16,10 @@ public class JGit {
 	private static final String remoteURL = "https://github.com/Srikanth346/TestUpload.git";
 	private static Git jgit = null;
 
+	/**
+	 * Function Name : initGit() Description : This function is used to
+	 * initialize Local Git Repository
+	 **/
 	private static Git initGit() {
 		try {
 			jgit = Git.open(new java.io.File(localRepository));
@@ -25,6 +29,10 @@ public class JGit {
 		return jgit;
 	}
 
+	/**
+	 * Function Name : addRemote Description : This function is used to add a
+	 * remote Repository to Local Git
+	 **/
 	private static void addRemote(Git git) {
 		try {
 			// Add Remote
@@ -43,6 +51,10 @@ public class JGit {
 		}
 	}
 
+	/**
+	 * Function Name : pushChangesToGit Description : This function is used to
+	 * update Changes to Online Git Repository
+	 **/
 	public static void pushChangesToGit() {
 		Git git = null;
 		try {
@@ -68,6 +80,10 @@ public class JGit {
 		}
 	}
 
+	/**
+	 * Function Name : pullChangesFromGit Description : This function is used to
+	 * get Update's from Git before pushing any Change's to Git Repository
+	 **/
 	public static boolean pullChangesFromGit() {
 		Git git = null;
 		try {
@@ -87,10 +103,5 @@ public class JGit {
 				ex.printStackTrace();
 		}
 		return true;
-	}
-
-	public static void main(String[] args) {
-		boolean condition = JGit.pullChangesFromGit();
-		System.out.println("Pull Request " + condition);
 	}
 }
