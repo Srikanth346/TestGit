@@ -66,7 +66,7 @@ public class JGit {
 			}
 			// Add File Pattern
 			git.add().addFilepattern(".").call();
-			git.commit().setMessage("Added New Line").call();
+			git.commit().setMessage("uploaded AsoClientPricing feed").call();
 			// Add Remote
 			addRemote(git);
 			// Push Changes to Online Repository

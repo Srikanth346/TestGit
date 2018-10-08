@@ -77,7 +77,7 @@ public class DownStreemFeed {
 			Transformer tform = TransformerFactory.newInstance().newTransformer();
 			tform.setOutputProperty(OutputKeys.INDENT, "yes");
 			tform.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-			tform.transform(new DOMSource(document), new StreamResult(System.out));
+			tform.transform(new DOMSource(document), new StreamResult(new java.io.File(filePath)));
 		} catch (ParserConfigurationException | SAXException | IOException | TransformerFactoryConfigurationError
 				| TransformerException exception) {
 			exception.printStackTrace();
