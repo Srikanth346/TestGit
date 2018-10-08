@@ -2,27 +2,26 @@ package com.acis.feed;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 import com.acis.feed.Config.Enum_Config;
 import com.acis.feed.Config;
-import com.acis.feed.FoldersCreation;
 import com.acis.feed.FoldersCreation.Enum_Feeds;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -69,14 +68,25 @@ public class DownStreemFeed {
 	 * Function Name : verifyFolderPath Description : This function is used to
 	 * pretty Print XML Document
 	 **/
-
-	public static final void prettyPrintXML(Document xmlDocument) throws Exception {
+	
+	private static Document prettyPrintXML(String filePath) throws ParserConfigurationException, SAXException, IOException,TransformerFactoryConfigurationError, TransformerException {
+		DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+		Document document = docBuilder.parse(new java.io.File(filePath));
+		Transformer tform = TransformerFactory.newInstance().newTransformer();
+		tform.setOutputProperty(OutputKeys.INDENT, "yes");
+		tform.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+		tform.transform(new DOMSource(document), new StreamResult(System.out));
+		return document;
+	}
+	
+/*	public static final void prettyPrintXML(Document xmlDocument) throws Exception {
 		Transformer tf = TransformerFactory.newInstance().newTransformer();
 		tf.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 		tf.setOutputProperty(OutputKeys.INDENT, "yes");
 		Writer out = new StringWriter();
 		tf.transform(new DOMSource(xmlDocument), new StreamResult(out));
-	}
+	}*/
 
 	/**
 	 * Function Name : transferFileFromServer Description : This function is
@@ -109,11 +119,11 @@ public class DownStreemFeed {
 			// Close Channel
 			channel.disconnect();
 			// Pretty Print XML Document
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			/*DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			dbf.setValidating(false);
 			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document document = db.parse(new FileInputStream(new File(outputFile)));
-			prettyPrintXML(document);
+			Document document = db.parse(new FileInputStream(new File(outputFile)));*/
+			prettyPrintXML(outputFile);
 			System.out.println("Pretty Print of XML Done.");
 			System.out.println("**************************************************************************************************************");
 			System.out.println("File Saved." + outputFile);
