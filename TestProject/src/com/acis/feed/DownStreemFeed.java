@@ -36,18 +36,23 @@ public class DownStreemFeed {
 	private static Session serverSession = null;
 	private static final String outputFile = new FoldersCreation().getOutputFolderPath(Enum_Feeds.ASOClientPricing)
 			+ "rxsolutionpricing09282018" + "_" + getTimeStamp() + ".xml";
-
+	private static Config config = null;
+	
+	
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
 	 * get Connection to SSHD Server
 	 **/
 	protected static Session getConnection(String hostServer, String userName, String password) throws JSchException {
+		//Create Object for Config
+		config = new Config();
 		java.util.Properties config = new java.util.Properties();
 		config.put("StrictHostKeyChecking", "no");
 		JSch javasch = new JSch();
 		Session sftpsession = null;
 		try {
-			sftpsession = javasch.getSession(userName, hostServer, 22);
+			//sftpsession = javasch.getSession(userName, hostServer, 22);
+			sftpsession = javasch.getSession( "" , hostServer, 22);
 			sftpsession.setPassword(password);
 			sftpsession.setConfig(config);
 			sftpsession.connect();
