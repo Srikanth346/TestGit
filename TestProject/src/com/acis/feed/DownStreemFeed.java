@@ -20,6 +20,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
+import com.acis.feed.Config.Enum_Config;
+import com.acis.feed.Config;
 import com.acis.feed.FoldersCreation;
 import com.acis.feed.FoldersCreation.Enum_Feeds;
 import com.jcraft.jsch.Channel;
@@ -30,29 +32,25 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 public class DownStreemFeed {
-	
-	private static String hostServer = "apsrt2150.uhc.com";
-	private static String userName = "acisat";
+
+	private static String hostServer = new Config().getConfigPropValue(Enum_Config.UNIXHostServer);
 	private static Session serverSession = null;
-	private static final String outputFile = new FoldersCreation().getOutputFolderPath(Enum_Feeds.ASOClientPricing)
-			+ "rxsolutionpricing09282018" + "_" + getTimeStamp() + ".xml";
-	private static Config config = null;
-	
-	
+	public static Config config = null;
+	private static String filePath = "C:/Users/msrikan7/git/TestUpload/TestProject/asoclientfeed/";
+	private static final String outputFile = filePath + "rxsolutionpricing10082018" + "_" + getTimeStamp() + ".xml";
+
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
 	 * get Connection to SSHD Server
 	 **/
 	protected static Session getConnection(String hostServer, String userName, String password) throws JSchException {
-		//Create Object for Config
-		config = new Config();
+		// Get Properties
 		java.util.Properties config = new java.util.Properties();
 		config.put("StrictHostKeyChecking", "no");
 		JSch javasch = new JSch();
 		Session sftpsession = null;
 		try {
-			//sftpsession = javasch.getSession(userName, hostServer, 22);
-			sftpsession = javasch.getSession( "" , hostServer, 22);
+			sftpsession = javasch.getSession(userName, hostServer, 22);
 			sftpsession.setPassword(password);
 			sftpsession.setConfig(config);
 			sftpsession.connect();
@@ -117,7 +115,9 @@ public class DownStreemFeed {
 			Document document = db.parse(new FileInputStream(new File(outputFile)));
 			prettyPrintXML(document);
 			System.out.println("Pretty Print of XML Done.");
+			System.out.println("**************************************************************************************************************");
 			System.out.println("File Saved." + outputFile);
+			System.out.println("**************************************************************************************************************");
 		} catch (JSchException jschException) {
 			System.out.println("Unable to create SFTP Channel to Host : " + hostServer);
 			System.out.println("File Tranfer from Host :" + hostServer + " got Failed");
@@ -176,22 +176,29 @@ public class DownStreemFeed {
 	}
 
 	public static void main(String[] args) throws JSchException {
-		String serverPath = "//acis/acisat7/ftp/asoclientpricing/rxsolutionpricing09282018.xml";
+		String serverPath = "//acis/acisat7/ftp/asoclientpricing/rxsolutionpricing10082018.xml";
+		config = new Config();
+		String userName = config.getConfigPropValue(Enum_Config.UserName);
 		String log;
+		String tranId = "560219";
 		try {
 			serverSession = DownStreemFeed.getConnection(hostServer, userName, "TUXup@1T");
-			log = executeCommand(serverSession,
-					"/acis/acisat7/bin/RELaunch_S.sh acisat7 " + args[0] +" acisxml2.0.xml:ASOClientPricing;/acisweb/bin/ASOClientPricing.sh acisat7 Daily runAsDate=TODAY");
+			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
+					+ " acisxml2.0.xml:ASOClientPricing;/acisweb/bin/ASOClientPricing.sh acisat7 Daily runAsDate=TODAY");
 			System.out.println(log);
 			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/asoclientpricing/;ls");
 			System.out.println(log);
 			transferFileFromServer(serverSession, serverPath, Enum_Feeds.RXSolution);
 			serverSession.disconnect();
+			//Push File to Git Hub in Remote 
+			JGit.pullChangesFromGit();
+			JGit.pushChangesToGit();
+			System.out.println("File Pushed to Git");
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (!serverSession.isConnected())
 				serverSession.disconnect();
-	}
+		}
 	}
 }
