@@ -18,7 +18,7 @@ public class JGit {
 			for (String uncomit : uncommited) {
 				System.out.println(uncomit);
 			}
-			git.add().addFilepattern("/DownStreamFeed/src/com/acis/downstreemfeed/JGit.java").call();
+			git.add().addFilepattern(".").call();
 			git.commit().setMessage("Added Commit Tags").call();
 
 			// Add Remote 
@@ -26,13 +26,13 @@ public class JGit {
 			remoteadd.setName("origin");
 			remoteadd.setUri(new URIish("https://github.com/Srikanth346/TestUpload.git"));
 			remoteadd.call();
-
-			/*// Push Changes to Online Repository 
+			
+			// Push Changes to Online Repository 
 			PushCommand push = git.push();
-			push.setRemote("https://github.com/Srikanth346/TestUpload.git");
+			//push.setRemote("https://github.com/Srikanth346/TestUpload.git");
 			push.setCredentialsProvider(
 					new UsernamePasswordCredentialsProvider("srikanth.m5593@gmail.com", "Srik@nth.m5593"));
-			push.call();*/
+			push.call();
 
 		} catch (Exception e) {
 			e.printStackTrace();
