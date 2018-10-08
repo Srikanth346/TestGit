@@ -10,7 +10,7 @@ public class JGit {
 	public static void main(String[] args) {
 		Git git = null;
 		try {
-
+			
 			git = Git.open(new java.io.File("C:/Users/msrikan7/git/TestUpload/.git"));
 
 			// Commit Changes
@@ -21,8 +21,6 @@ public class JGit {
 			git.add().addFilepattern(".").call();
 			git.commit().setMessage("Added New Line").call();
 			
-			System.out.println("New Line Added to Verify Commit");
-
 			// Add Remote 
 			RemoteAddCommand remoteadd = git.remoteAdd();
 			remoteadd.setName("origin");
@@ -41,17 +39,3 @@ public class JGit {
 		}
 	}
 }
-
-/*
- * Git remoteGit = Git.cloneRepository().setURI(
- * "https://github.com/Srikanth346/TestProject.git") .setCredentialsProvider(
- * new UsernamePasswordCredentialsProvider("srikanth.m5593@gmail.com",
- * "Srik@nth.m5593")) .setDirectory(new
- * java.io.File("/DownstreemFeed/src/git/bash1")).call();
- * 
- * remoteGit.add().addFilepattern("Config.java").call();
- * remoteGit.commit().setMessage("Initial Commit"); PushCommand pushCommand =
- * remoteGit.push() .setCredentialsProvider( new
- * UsernamePasswordCredentialsProvider("srikanth.m5593@gmail.com",
- * "Srik@nth.m5593")); pushCommand.call();
- */
