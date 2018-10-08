@@ -19,7 +19,9 @@ public class JGit {
 				System.out.println(uncomit);
 			}
 			git.add().addFilepattern(".").call();
-			git.commit().setMessage("Added Commit Tags").call();
+			git.commit().setMessage("Added New Line").call();
+			
+			System.out.println("New Line Added to Verify Commit");
 
 			// Add Remote 
 			RemoteAddCommand remoteadd = git.remoteAdd();
