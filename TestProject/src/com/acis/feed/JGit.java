@@ -66,7 +66,7 @@ public class JGit {
 			}
 			// Add File Pattern
 			git.add().addFilepattern(".").call();
-			git.commit().setMessage("uploaded AsoClientPricing feed").call();
+			git.commit().setMessage("AsoClientPricing feed Trans_Id : 560219 ").call();
 			// Add Remote
 			addRemote(git);
 			// Push Changes to Online Repository
