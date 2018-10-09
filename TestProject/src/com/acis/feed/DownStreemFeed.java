@@ -195,6 +195,7 @@ public class DownStreemFeed {
 			serverSession = DownStreemFeed.getConnection( hostServer, userName, "TUXup@1T" );
 			
 			for(int i=0;i<30;i++) { System.out.print("---"); }
+			System.out.println("");
 			//UP2S 
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " Alliance.xml;/acisweb/bin/Collector.sh acisat7 Alliance-collector.xml");
@@ -203,14 +204,15 @@ public class DownStreemFeed {
 			System.out.println("Latest File: " +  latestFile );
 			transferFileFromServer(serverSession, latestFile , Enum_Feeds.UP2S);
 			
-			for(int i=0;i<30;i++) { System.out.print("---"); }
+			/*for(int i=0;i<30;i++) { System.out.print("---"); }
+			System.out.println("");
 			//RxSolution  
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " cisxml2.0.xml:RxSolutions;/acisweb/bin/RxSolutions_v2.sh acisat7 Daily TODAY");
 			System.out.println(log);
 			latestFile = executeCommand(serverSession, "cd /acis/acisat7/ftp/rxsolutions/;ls -t1 --file-type *.xml |  head -n 1");
 			System.out.println("Latest File: " +  latestFile );
-			transferFileFromServer(serverSession, latestFile , Enum_Feeds.RXSolution);
+			transferFileFromServer(serverSession, latestFile , Enum_Feeds.RXSolution);*/
 			
 			//Disconnect from Unix Server 
 			serverSession.disconnect();
