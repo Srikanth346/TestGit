@@ -35,9 +35,9 @@ public class DownStreemFeed {
 	private static String hostServer = new Config().getConfigPropValue(Enum_Config.UNIXHostServer);
 	private static Session serverSession = null;
 	public static Config config = null;
-	private static String filePath = "C:/Users/msrikan7/git/TestUpload/TestProject/asoclientfeed/";
+	//private static String filePath = "C:/Users/msrikan7/git/TestUpload/TestProject/asoclientfeed/";
 	//private static final String outputFile = filePath + "rxsolutionpricing10082018.xml";
-	private static final String outputFile = filePath + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
+	//private static final String outputFile = filePath + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
 
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
@@ -92,6 +92,7 @@ public class DownStreemFeed {
 	 **/
 	public static void transferFileFromServer(Session session, String serverFilePath, Enum_Feeds feedType) {
 		ChannelSftp channel = null;
+		String outputFilePath = "";
 		try {
 			// Create a Channel to SFTP
 			channel = (ChannelSftp) session.openChannel("sftp");
@@ -102,9 +103,25 @@ public class DownStreemFeed {
 			} else {
 				System.out.println("Not Connected to Sftp Channel");
 			}
+			//Get OutputfilePath  
+			switch(feedType.getFolderName()){
+			case "alliance":
+				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.UP2S) + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml"; ;
+				break;
+			case "rxsolutions":
+				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.RXSolution) + "rxsolutions" + getFormatedDate() + "daily.xml";
+				break;
+			case "ecap":
+				outputFilePath =  FoldersCreation.getOutputFolderPath(Enum_Feeds.ECAP) + feedType.getFolderName().toUpperCase() + "";
+				break;
+			case "aup":
+				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.AUP) + feedType.getFolderName().toUpperCase() + "";
+				break;
+			}
+			System.out.println(outputFilePath);
 			InputStream out = channel.get(serverFilePath);
 			BufferedReader br = new BufferedReader(new InputStreamReader(out));
-			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath));
 			System.out.println(" Reading File");
 			String line;
 			while ((line = br.readLine()) != null) {
@@ -117,11 +134,11 @@ public class DownStreemFeed {
 			// Close Channel
 			channel.disconnect();
 			// Pretty Print XML Document
-			prettyPrintXML(outputFile);
+			prettyPrintXML(outputFilePath);
 			System.out.println("Pretty Print of XML Done.");
 			System.out.println(
 					"**************************************************************************************************************");
-			System.out.println("File Saved." + outputFile);
+			System.out.println("File Saved." + outputFilePath);
 			System.out.println(
 					"**************************************************************************************************************");
 		} catch (JSchException jschException) {
@@ -129,6 +146,7 @@ public class DownStreemFeed {
 			System.out.println("File Tranfer from Host :" + hostServer + " got Failed");
 			jschException.getStackTrace();
 		} catch (Exception exception) {
+			if( exception instanceof IOException  ) System.out.println(exception.getMessage()); 
 			exception.getStackTrace();
 		} finally {
 			if (channel.isClosed())
@@ -183,26 +201,33 @@ public class DownStreemFeed {
 
 	public static void main(String[] args) throws JSchException {
 		String serverPath = "//acis/acisat7/ftp/alliance/" + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
+		//String serverPath = "//acis/acisat7/ftp/asoclientpricing/" + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
 		config = new Config();
 		String userName = config.getConfigPropValue(Enum_Config.UserName);
 		String log;
 		String tranId = "560219";
 		try {
 			serverSession = DownStreemFeed.getConnection(hostServer, userName, "TUXup@1T");
-			/*//ASO Client Pricing 
-			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
-					+ " acisxml2.0.xml:ASOClientPricing;/acisweb/bin/ASOClientPricing.sh acisat7 Daily runAsDate=TODAY");
-			System.out.println(log);
-			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/asoclientpricing/;ls");
-			System.out.println(log);*/
-			//RxSolution 
+			
+			//UP2S 
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " Alliance.xml;/acisweb/bin/Collector.sh acisat7 Alliance-collector.xml");
+			System.out.println(log);
+			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/alliance/;ls -t1 --file-type *.xml |  head -n 1");
+			System.out.println("Latest File************" + log );
+			System.out.println(log);
+			System.out.println(serverPath);
+			transferFileFromServer(serverSession, serverPath, Enum_Feeds.UP2S);
+			
+			/*//RxSolution  
+			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
+					+ " cisxml2.0.xml:RxSolutions;/acisweb/bin/RxSolutions_v2.sh acisat7 Daily TODAY");
 			System.out.println(log);
 			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/alliance/;ls");
 			System.out.println(log);
 			System.out.println(serverPath);
-			transferFileFromServer(serverSession, serverPath, Enum_Feeds.UP2S);
+			transferFileFromServer(serverSession, serverPath, Enum_Feeds.UP2S);*/
+			
 			serverSession.disconnect();
 			// Push File to Git Hub in Remote
 			JGit.pullChangesFromGit();

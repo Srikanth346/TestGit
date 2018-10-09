@@ -1,54 +1,54 @@
 package com.acis.feed;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.IOException;
 import java.util.EnumSet;
 
 public class FoldersCreation {
 
 	public enum Enum_Feeds {
-		ASOClientPricing("asoclientpricing"), RXSolution("rxsolutions"), UP2S("alliance"), ECAP(""), AUP("");
+		RXSolution("rxsolutions"), UP2S("alliance"), ECAP("ecap"), AUP("aup");
 		private String folderName;
+
 		private Enum_Feeds(String str_Value) {
 			this.folderName = str_Value;
 		}
+
 		public String getFolderName() {
 			return folderName;
 		}
+
 		@Override
 		public String toString() {
 			return folderName;
 		}
 	}
-	protected String str_maindir = "C:\\acisat7\\ftp";
+
+	private static String str_maindir = "C:/Users/msrikan7/git/TestUpload/TestProject/";
 
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
 	 * verify all folder presence in Specified Drive
 	 **/
-	public boolean verifyFolderPath() {
+	public static boolean verifyFolderPath() {
 		boolean checkflag = false;
 		try {
 			java.io.File file = new java.io.File(str_maindir);
 			// Verify for Main Directory
 			if (!file.isDirectory()) {
-				// Create acisat7 Folder in C:\ Drive
+				// Create acisat7 Folder in
+				// C:/Users/msrikan7/git/TestUpload/TestProject/
 				new java.io.File(str_maindir).mkdirs();
 			}
-			// Verify for Folder in C:\ Driver
+			// Verify for Folder in
+			// "C:/Users/msrikan7/git/TestUpload/TestProject/";
 			String folderPath = "";
 			for (Enum_Feeds folder : EnumSet.allOf(Enum_Feeds.class)) {
-				folderPath = str_maindir + "\\" + folder.getFolderName();
+				folderPath = str_maindir + folder.getFolderName().toUpperCase();
 				if (!new java.io.File(folderPath).isDirectory()) {
+					System.out.println("Created New Directory " + folder.getFolderName().toUpperCase() + "in the path: "
+							+ folderPath);
 					// Create Folder if it doesn't Exist
 					new java.io.File(folderPath).mkdirs();
-				}
-				String strNewFolder = "";
-				// Create a new directory with today's date
-				strNewFolder = folderPath + "\\" + getTodaysDate();
-				if (!new java.io.File(strNewFolder).isDirectory()) {
-					// Create Folder with today's date if it doesn't Exist
-					new java.io.File(strNewFolder).mkdirs();
 				}
 			}
 			checkflag = true;
@@ -58,28 +58,14 @@ public class FoldersCreation {
 		return checkflag;
 	}
 
-	public String getOutputFolderPath(Enum_Feeds feedType) {
+	public static String getOutputFolderPath(Enum_Feeds feedType) {
 		// Verify all Folders are Present
+		verifyFolderPath();
 		boolean verifyFolderPaths = verifyFolderPath();
 		String filePath = str_maindir;
 		if (verifyFolderPaths) {
-			filePath = filePath + "\\" + feedType.getFolderName() + "\\" + getTodaysDate() + "\\";
+			filePath = filePath + "/" + feedType.getFolderName().toUpperCase() + "/";
 		}
 		return filePath;
 	}
-
-	/**
-	 * Function Name : getTodaysDate Description : This function is used to get
-	 * formatted today's Date
-	 **/
-	private String getTodaysDate() {
-		SimpleDateFormat dateformatter = new SimpleDateFormat("dd-MM-yyyy");
-		Date todaysDate = new Date();
-		String str_date = dateformatter.format(todaysDate);
-		return str_date.toString();
-	}
-	
-	/*public static void main(String[] args){
-		System.out.println(new FoldersCreation().getOutputFolderPath(Enum_Feeds.UP2S));
-	}*/
 }
