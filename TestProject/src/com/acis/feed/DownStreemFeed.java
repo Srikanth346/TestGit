@@ -116,7 +116,7 @@ public class DownStreemFeed {
 				break;
 			}
 			System.out.println(outputFilePath);
-			InputStream out = channel.get(serverFilePath);
+			InputStream out = channel.get(serverFilePath.toString());
 			BufferedReader br = new BufferedReader(new InputStreamReader(out));
 			BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilePath));
 			System.out.println(" Reading File");
