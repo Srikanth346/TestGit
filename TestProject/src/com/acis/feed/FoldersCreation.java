@@ -1,6 +1,5 @@
 package com.acis.feed;
 
-import java.io.IOException;
 import java.util.EnumSet;
 
 public class FoldersCreation {
@@ -12,18 +11,16 @@ public class FoldersCreation {
 		private Enum_Feeds(String str_Value) {
 			this.folderName = str_Value;
 		}
-
 		public String getFolderName() {
 			return folderName;
 		}
-
 		@Override
 		public String toString() {
 			return folderName;
 		}
 	}
 
-	private static String str_maindir = "C:/Users/msrikan7/git/TestUpload/TestProject/feeds";
+	private static String str_maindir = "C:/Users/msrikan7/git/TestUpload/TestProject/feeds/";
 
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
@@ -43,12 +40,16 @@ public class FoldersCreation {
 			// "C:/Users/msrikan7/git/TestUpload/TestProject/";
 			String folderPath = "";
 			for (Enum_Feeds folder : EnumSet.allOf(Enum_Feeds.class)) {
-				folderPath = str_maindir + folder.getFolderName().toUpperCase();
+				folderPath = str_maindir + folder.getFolderName();
 				if (!new java.io.File(folderPath).isDirectory()) {
-					System.out.println("Created New Directory " + folder.getFolderName().toUpperCase() + "in the path: "
-							+ folderPath);
+					System.out
+							.println("Created New Directory " + folder.getFolderName() + "in the path: " + folderPath);
 					// Create Folder if it doesn't Exist
 					new java.io.File(folderPath).mkdirs();
+				}
+				if (!new java.io.File(folderPath + "/backup").isDirectory()) {
+					new java.io.File(folderPath + "/backup").mkdir();
+					System.out.println("Created a backup Folder in Path " + folderPath);
 				}
 			}
 			checkflag = true;
