@@ -89,6 +89,7 @@ public class DownStreemFeed {
 		ChannelSftp channel = null;
 		String outputFilePath = "";
 		String serverFilePath = "//acis/acisat7/ftp/" + feedType.toString() + "/" + latestFile;
+		System.out.println("Server path " + serverFilePath );
 		try {
 			// Create a Channel to SFTP
 			channel = (ChannelSftp) session.openChannel("sftp");
@@ -191,9 +192,9 @@ public class DownStreemFeed {
 		String log;
 		String tranId = "560219";
 		try {
-			for(int i=0;i<30;i++) { System.out.print("-"); }
-			serverSession = DownStreemFeed.getConnection(hostServer, userName, "TUXup@1T");
+			serverSession = DownStreemFeed.getConnection( hostServer, userName, "TUXup@1T" );
 			
+			for(int i=0;i<30;i++) { System.out.print("---"); }
 			//UP2S 
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " Alliance.xml;/acisweb/bin/Collector.sh acisat7 Alliance-collector.xml");
@@ -202,6 +203,7 @@ public class DownStreemFeed {
 			System.out.println("Latest File: " +  latestFile );
 			transferFileFromServer(serverSession, latestFile , Enum_Feeds.UP2S);
 			
+			for(int i=0;i<30;i++) { System.out.print("---"); }
 			//RxSolution  
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " cisxml2.0.xml:RxSolutions;/acisweb/bin/RxSolutions_v2.sh acisat7 Daily TODAY");
@@ -210,6 +212,7 @@ public class DownStreemFeed {
 			System.out.println("Latest File: " +  latestFile );
 			transferFileFromServer(serverSession, latestFile , Enum_Feeds.RXSolution);
 			
+			//Disconnect from Unix Server 
 			serverSession.disconnect();
 			// Push File to Git Hub in Remote
 			JGit.pullChangesFromGit();
