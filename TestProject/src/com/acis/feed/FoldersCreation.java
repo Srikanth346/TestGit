@@ -65,7 +65,7 @@ public class FoldersCreation {
 		boolean verifyFolderPaths = verifyFolderPath();
 		String filePath = str_maindir;
 		if (verifyFolderPaths) {
-			filePath = filePath + "/" + feedType.getFolderName().toUpperCase() + "/";
+			filePath = filePath + feedType.getFolderName() + "/";
 		}
 		return filePath;
 	}

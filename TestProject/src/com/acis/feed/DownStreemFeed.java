@@ -191,6 +191,7 @@ public class DownStreemFeed {
 		String log;
 		String tranId = "560219";
 		try {
+			for(int i=0;i<30;i++) { System.out.print("-"); }
 			serverSession = DownStreemFeed.getConnection(hostServer, userName, "TUXup@1T");
 			
 			//UP2S 
