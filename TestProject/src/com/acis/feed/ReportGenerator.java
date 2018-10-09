@@ -14,7 +14,8 @@ public class ReportGenerator {
 	private static String fileName = "C:/Users/msrikan7/git/TestUpload/TestProject/TestReports/TestReport.html";
 	private static FileWriter fileWriter = null;
 	private static BufferedWriter bufferedWriter = null;
-	private static int pass = 0, fail = 0, warning = 0, info = 0, steps = 1;
+	@SuppressWarnings("unused")
+	private static int pass = 0, fail = 0, warning = 0, steps = 1, info = 0;
 	private static java.time.Instant start;
 	private static java.time.Instant end;
 
@@ -32,60 +33,60 @@ public class ReportGenerator {
 	}
 
 	private static void initReport() throws IOException {
-		//Start Time 
+		// Start Time
 		start = Instant.now();
 		fileWriter = new FileWriter(fileName);
 		bufferedWriter = new BufferedWriter(fileWriter);
+		//Add HTML head 
 		bufferedWriter
 				.write("<!DOCTYPE html><html><head><title>HTML Test Report</title><script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>"
 						+ "<script>$('a').click(function(){$('html,body').animate({scrollTop: $('#scrollDown').offset().top},'slow');});"
-						+ "	</script><meta http-equiv='Content-Type' content='text/html;charset=utf-8'><style>div#footer { padding: 0.5px; color: white; background-color: #696969; margin-top: 15px;}"
-						+ "table { border: 1px solid black; width: 100%; }table.headerTable { border: 0px solid white;width: 60%; }"
-						+ "tr#dummy, td#dummy, th#dummy { font-size: 16.8px;font-weight: bold	; color:#2E8B57 }td { text-align: left; padding: 8px; max-height: 100px;}"
-						+ "td#statuscells { text-align: center; padding: 8px; }th { text-align: center; padding: 8px; }tr:nth-child(even) { background-color: #f2f2f2 }"
-						+ "th { background-color: #008B8B; color: white; } /* #3CB371 */</style></head>");
+							+ "	</script><meta http-equiv='Content-Type' content='text/html;charset=utf-8'><style>div#footer { padding: 0.5px; color: white; background-color: #696969; margin-top: 15px;}"
+								+ "table { border: 1px solid black; width: 100%; }table.headerTable { border: 0px solid white;width: 60%; }"
+									+ "tr#dummy, td#dummy, th#dummy { font-size: 16.8px;font-weight: bold	; color:#2E8B57 }td { text-align: left; padding: 8px; max-height: 100px;}"
+										+ "td#statuscells { text-align: center; padding: 8px; }th { text-align: center; padding: 8px; }tr:nth-child(even) { background-color: #f2f2f2 }"
+											+ "th { background-color: #008B8B; color: white; } /* #3CB371 */</style></head>");
+		//Add HTML body 
 		bufferedWriter
 				.write("<body><div style='margin-left: 20px;margin-right: 20px;'><h2 style='color:#FFA07A'> OPTUM<span style='font-size: 16px;'>&reg;</span> | ACIS</h2>"
-						+ "<table class='headerTable' ><tr id='dummy'><td id='dummy'> Test Report Name: DownStream Feed </td><td id='dummy'>Date: "
-						+ new SimpleDateFormat("dd MMM, yy").format(new Date())
-						+ " </td></tr><tr id='dummy'><td id='dummy'>Host Address: "
-						+ InetAddress.getLocalHost().getHostName() + " </td><td id='dummy'>Operating System: "
-						+ System.getProperty("os.name") + "</td></tr><tr id='dummy'><td id='dummy'>User Name: " + System.getProperty("user.name") + " </td></tr></table>"
-						+ "<h2 style='text-shadow:black;color:#F08080;text-decoration:underline;' id='htmlheader'><a>HTML Test Report: </a></h2><table><tr><th style='width: 10px;'>Step</th>"
-						+ "<th style='width: 35px;'>Description</th><th style='width: 35px;'>Details</th><th style='width: 10px;'>Status</th><th style='width:10px;'>Time</th></tr>");
+							+ "<table class='headerTable' ><tr id='dummy'><td id='dummy'> Test Report Name: DownStream Feed </td><td id='dummy'>Date: "
+								+ new SimpleDateFormat("dd MMM, yy").format(new Date())
+									+ " </td></tr><tr id='dummy'><td id='dummy'>Host Address: "
+										+ InetAddress.getLocalHost().getHostName() + " </td><td id='dummy'>Operating System: "
+											+ System.getProperty("os.name") + "</td></tr><tr id='dummy'><td id='dummy'>User Name: "
+												+ System.getProperty("user.name") + " </td></tr></table>"
+													+ "<h2 style='text-shadow:black;color:#F08080;text-decoration:underline;' id='htmlheader'><a>HTML Test Report: </a></h2><table><tr><th style='width: 10px;'>Step</th>"
+														+ "<th style='width: 35px;'>Description</th><th style='width: 35px;'>Details</th><th style='width: 10px;'>Status</th><th style='width:10px;'>Time</th></tr>");
 	}
 
-	public static void log(String strDescription, String strExpected, LOG_STATUS status) {
+	public static void log(String strDescription, String strExpectedMessage, LOG_STATUS status) {
 		String logStatus = status.getStatus();
 		String timeStamp = ReportGenerator.getCurrentTimeStamp();
+		//Add Step to HTML Report 
 		try {
 			switch (logStatus) {
 			case "info":
-				bufferedWriter.write("<tr><td id='statuscells'> " + steps
-						+ " </td><td>Create New Business</td><td>Selected File -> New -> Transaction -> New Business Menu Option </td>"
-						+ "<td id='statuscells' style='color:grey;font-weight: bolder;'>Info</td><td id='statuscells'> "
-						+ timeStamp + " </td> <!-- #FF6347 --></tr>");
+				bufferedWriter.write( "<tr><td id='statuscells'> " + steps
+							+ " </td><td>Create New Business</td><td> " + strExpectedMessage + " </td>"
+								+ "<td id='statuscells' style='color:grey;font-weight: bolder;'>Info</td><td id='statuscells'> " + timeStamp + " </td> <!-- #FF6347 --></tr>");
 				info += 1;
 				break;
 			case "pass":
-				bufferedWriter.write("<tr><td id='statuscells'> " + steps
-						+ " </td><td>Create New Business</td><td>Selected File -> New -> Transaction -> New Business Menu Option </td>"
-						+ "<td id='statuscells' style='color:green;font-weight: bolder;'>Pass</td><td id='statuscells'> "
-						+ timeStamp + " </td> <!-- #FF6347 --></tr>");
+				bufferedWriter.write( "<tr><td id='statuscells'> " + steps
+							+ " </td><td>Create New Business</td><td> " + strExpectedMessage + "</td>" 
+								+ "<td id='statuscells' style='color:green;font-weight: bolder;'>Pass</td><td id='statuscells'> " + timeStamp + " </td> <!-- #FF6347 --></tr>");
 				pass += 1;
 				break;
 			case "warning":
 				bufferedWriter.write("<tr><td id='statuscells'> " + steps
-						+ " </td><td>Create New Business</td><td>Selected File -> New -> Transaction -> New Business Menu Option </td>"
-						+ "<td id='statuscells' style='color:orange;font-weight: bolder;'>Warning</td><td id='statuscells'> "
-						+ timeStamp + " </td> <!-- #FF6347 --></tr>");
+							+ " </td><td>Create New Business</td><td> " + strExpectedMessage + "</td>" 
+								+ "<td id='statuscells' style='color:orange;font-weight: bolder;'>Warning</td><td id='statuscells'> " + timeStamp + " </td> <!-- #FF6347 --></tr>");
 				warning += 1;
 				break;
 			case "fail":
 				bufferedWriter.write("<tr><td id='statuscells'> " + steps
-						+ " </td><td>Create New Business</td><td>Selected File -> New -> Transaction -> New Business Menu Option </td>"
-						+ "<td id='statuscells' style='color:red;font-weight: bolder;'>Fail</td><td id='statuscells'> "
-						+ timeStamp + " </td> <!-- #FF6347 --></tr>");
+							+ " </td><td>Create New Business</td><td> " + strExpectedMessage + " </td>"
+								+ "<td id='statuscells' style='color:red;font-weight: bolder;'>Fail</td><td id='statuscells'> " + timeStamp + " </td> <!-- #FF6347 --></tr>");
 				fail += 1;
 				break;
 			}
@@ -103,11 +104,12 @@ public class ReportGenerator {
 			bufferedWriter
 					.write("</table><table class='headerTable' id='scrollDown'><tr id='dummy'><td id='dummy'>Overall Status : <span style='color: black'>Pass</span></td></tr><tr id='dummy'>"
 							+ "<td id='dummy'><span style='color: green'>Pass : " + pass
-							+ " </span> </td></tr><tr id='dummy'><td id='dummy'><span style='color: red'>Fail : " + fail
-							+ " </span></td></tr><tr id='dummy'>"
-							+ "<td id='dummy'><span style='color: orange'>Warning : " + warning
-							+ " </span></td></tr><tr id='dummy'><td id='dummy'>Total time taken  : " +  timeElapsed.toMillis() + "ms </td></tr></table>"
-							+ "<div id='footer'><p style='margin-left: 20px;'>&copy; Optum Global Technologies.</p></div></div></body></html>");
+								+ " </span> </td></tr><tr id='dummy'><td id='dummy'><span style='color: red'>Fail : " + fail
+									+ " </span></td></tr><tr id='dummy'>"
+										+ "<td id='dummy'><span style='color: orange'>Warning : " + warning
+											+ " </span></td></tr><tr id='dummy'><td id='dummy'>Total time taken  : "
+												+ timeElapsed.toMillis() + "ms </td></tr></table>"
+													+ "<div id='footer'><p style='margin-left: 20px;'>&copy; Optum Global Technologies.</p></div></div></body></html>");
 			// Close Buffered Writer & FileWriter Object's
 			bufferedWriter.close();
 			fileWriter.close();

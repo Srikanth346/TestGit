@@ -36,7 +36,8 @@ public class DownStreemFeed {
 	private static Session serverSession = null;
 	public static Config config = null;
 	private static String filePath = "C:/Users/msrikan7/git/TestUpload/TestProject/asoclientfeed/";
-	private static final String outputFile = filePath + "rxsolutionpricing10082018.xml";
+	//private static final String outputFile = filePath + "rxsolutionpricing10082018.xml";
+	private static final String outputFile = filePath + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
 
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
@@ -136,11 +137,11 @@ public class DownStreemFeed {
 	}
 
 	/**
-	 * Function Name : getFormattedDate Description : This function is used to get
+	 * Function Name : getFormatedDate Description : This function is used to get
 	 * Formatted Date for Feed 
 	 **/
-	private static String getFormattedDate() {
-		SimpleDateFormat dateformatter = new SimpleDateFormat("HHmmssSS");
+	private static String getFormatedDate() {
+		SimpleDateFormat dateformatter = new SimpleDateFormat("yyyyMMdd");
 		Date todaysDate = new Date();
 		String str_date = dateformatter.format(todaysDate);
 		return str_date.toString();
@@ -181,19 +182,26 @@ public class DownStreemFeed {
 	}
 
 	public static void main(String[] args) throws JSchException {
-		String serverPath = "//acis/acisat7/ftp/asoclientpricing/rxsolutionpricing10082018.xml";
+		String serverPath = "//acis/acisat7/ftp/asoclientpricing/" + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
 		config = new Config();
 		String userName = config.getConfigPropValue(Enum_Config.UserName);
 		String log;
 		String tranId = "560219";
 		try {
 			serverSession = DownStreemFeed.getConnection(hostServer, userName, "TUXup@1T");
+			/*//ASO Client Pricing 
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " acisxml2.0.xml:ASOClientPricing;/acisweb/bin/ASOClientPricing.sh acisat7 Daily runAsDate=TODAY");
 			System.out.println(log);
 			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/asoclientpricing/;ls");
+			System.out.println(log);*/
+			//RxSolution 
+			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
+					+ " Alliance.xml;/acisweb/bin/Collector.sh acisat7 Alliance-collector.xml");
 			System.out.println(log);
-			transferFileFromServer(serverSession, serverPath, Enum_Feeds.RXSolution);
+			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/alliance/;ls");
+			System.out.println(log);
+			transferFileFromServer(serverSession, serverPath, Enum_Feeds.UP2S);
 			serverSession.disconnect();
 			// Push File to Git Hub in Remote
 			JGit.pullChangesFromGit();

@@ -7,7 +7,7 @@ import java.util.EnumSet;
 public class FoldersCreation {
 
 	public enum Enum_Feeds {
-		ASOClientPricing("asoclientpricing"), RXSolution("rxsolutions"), UP2S("alliance");
+		ASOClientPricing("asoclientpricing"), RXSolution("rxsolutions"), UP2S("alliance"), ECAP(""), AUP("");
 		private String folderName;
 		private Enum_Feeds(String str_Value) {
 			this.folderName = str_Value;
