@@ -182,7 +182,7 @@ public class DownStreemFeed {
 	}
 
 	public static void main(String[] args) throws JSchException {
-		String serverPath = "//acis/acisat7/ftp/asoclientpricing/" + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
+		String serverPath = "//acis/acisat7/ftp/alliance/" + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
 		config = new Config();
 		String userName = config.getConfigPropValue(Enum_Config.UserName);
 		String log;
@@ -201,6 +201,7 @@ public class DownStreemFeed {
 			System.out.println(log);
 			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/alliance/;ls");
 			System.out.println(log);
+			System.out.println(serverPath);
 			transferFileFromServer(serverSession, serverPath, Enum_Feeds.UP2S);
 			serverSession.disconnect();
 			// Push File to Git Hub in Remote
