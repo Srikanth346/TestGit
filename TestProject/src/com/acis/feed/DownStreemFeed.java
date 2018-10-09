@@ -141,10 +141,10 @@ public class DownStreemFeed {
 		} catch (JSchException jschException) {
 			System.out.println("Unable to create SFTP Channel to Host : " + hostServer);
 			System.out.println("File Tranfer from Host :" + hostServer + " got Failed");
-			jschException.getStackTrace();
+			jschException.printStackTrace();
 		} catch (Exception exception) {
 			if( exception instanceof IOException  ) System.out.println(exception.getMessage()); 
-			exception.getStackTrace();
+			exception.printStackTrace();
 		} finally {
 			if (channel.isClosed())
 				channel.disconnect();
