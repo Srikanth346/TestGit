@@ -6,8 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -35,9 +33,6 @@ public class DownStreemFeed {
 	private static String hostServer = new Config().getConfigPropValue(Enum_Config.UNIXHostServer);
 	private static Session serverSession = null;
 	public static Config config = null;
-	//private static String filePath = "C:/Users/msrikan7/git/TestUpload/TestProject/asoclientfeed/";
-	//private static final String outputFile = filePath + "rxsolutionpricing10082018.xml";
-	//private static final String outputFile = filePath + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
 
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
@@ -90,9 +85,10 @@ public class DownStreemFeed {
 	 * Function Name : transferFileFromServer Description : This function is
 	 * used to transfer a File from SFTP Server
 	 **/
-	public static void transferFileFromServer(Session session, String serverFilePath, Enum_Feeds feedType) {
+	public static void transferFileFromServer(Session session, String latestFile, Enum_Feeds feedType) {
 		ChannelSftp channel = null;
 		String outputFilePath = "";
+		String serverFilePath = "//acis/acisat7/ftp/" + feedType.toString() + "/" + latestFile;
 		try {
 			// Create a Channel to SFTP
 			channel = (ChannelSftp) session.openChannel("sftp");
@@ -106,16 +102,16 @@ public class DownStreemFeed {
 			//Get OutputfilePath  
 			switch(feedType.getFolderName()){
 			case "alliance":
-				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.UP2S) + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml"; ;
+				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.UP2S) + latestFile ;
 				break;
 			case "rxsolutions":
-				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.RXSolution) + "rxsolutions" + getFormatedDate() + "daily.xml";
+				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.RXSolution) + latestFile;
 				break;
 			case "ecap":
-				outputFilePath =  FoldersCreation.getOutputFolderPath(Enum_Feeds.ECAP) + feedType.getFolderName().toUpperCase() + "";
+				outputFilePath =  FoldersCreation.getOutputFolderPath(Enum_Feeds.ECAP) + latestFile;
 				break;
 			case "aup":
-				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.AUP) + feedType.getFolderName().toUpperCase() + "";
+				outputFilePath = FoldersCreation.getOutputFolderPath(Enum_Feeds.AUP) + latestFile;
 				break;
 			}
 			System.out.println(outputFilePath);
@@ -155,17 +151,6 @@ public class DownStreemFeed {
 	}
 
 	/**
-	 * Function Name : getFormatedDate Description : This function is used to get
-	 * Formatted Date for Feed 
-	 **/
-	private static String getFormatedDate() {
-		SimpleDateFormat dateformatter = new SimpleDateFormat("yyyyMMdd");
-		Date todaysDate = new Date();
-		String str_date = dateformatter.format(todaysDate);
-		return str_date.toString();
-	}
-
-	/**
 	 * Function Name : executeCommand Description : This function is used to
 	 * execute command's on connected host
 	 **/
@@ -200,8 +185,7 @@ public class DownStreemFeed {
 	}
 
 	public static void main(String[] args) throws JSchException {
-		String serverPath = "//acis/acisat7/ftp/alliance/" + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
-		//String serverPath = "//acis/acisat7/ftp/asoclientpricing/" + "F5633PGH.ACIS.INPUT_" + getFormatedDate() + ".xml";
+		String latestFile = "";
 		config = new Config();
 		String userName = config.getConfigPropValue(Enum_Config.UserName);
 		String log;
@@ -213,20 +197,17 @@ public class DownStreemFeed {
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " Alliance.xml;/acisweb/bin/Collector.sh acisat7 Alliance-collector.xml");
 			System.out.println(log);
-			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/alliance/;ls -t1 --file-type *.xml |  head -n 1");
-			System.out.println("Latest File************" + log );
-			System.out.println(log);
-			System.out.println(serverPath);
-			transferFileFromServer(serverSession, serverPath, Enum_Feeds.UP2S);
+			latestFile = executeCommand(serverSession, "cd /acis/acisat7/ftp/alliance/;ls -t1 --file-type *.xml |  head -n 1");
+			System.out.println("Latest File: " +  latestFile );
+			transferFileFromServer(serverSession, latestFile , Enum_Feeds.UP2S);
 			
-			/*//RxSolution  
+			//RxSolution  
 			log = executeCommand(serverSession, "/acis/acisat7/bin/RELaunch_S.sh acisat7 " + tranId
 					+ " cisxml2.0.xml:RxSolutions;/acisweb/bin/RxSolutions_v2.sh acisat7 Daily TODAY");
 			System.out.println(log);
-			log = executeCommand(serverSession, "cd /acis/acisat7/ftp/alliance/;ls");
-			System.out.println(log);
-			System.out.println(serverPath);
-			transferFileFromServer(serverSession, serverPath, Enum_Feeds.UP2S);*/
+			latestFile = executeCommand(serverSession, "cd /acis/acisat7/ftp/rxsolutions/;ls -t1 --file-type *.xml |  head -n 1");
+			System.out.println("Latest File: " +  latestFile );
+			transferFileFromServer(serverSession, latestFile , Enum_Feeds.RXSolution);
 			
 			serverSession.disconnect();
 			// Push File to Git Hub in Remote

@@ -23,7 +23,7 @@ public class FoldersCreation {
 		}
 	}
 
-	private static String str_maindir = "C:/Users/msrikan7/git/TestUpload/TestProject/";
+	private static String str_maindir = "C:/Users/msrikan7/git/TestUpload/TestProject/feeds";
 
 	/**
 	 * Function Name : verifyFolderPath Description : This function is used to
